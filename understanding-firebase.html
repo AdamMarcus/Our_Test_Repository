@@ -13,7 +13,12 @@
         if (e.keyCode == 13) {
           var name = $('#nameInput').val();
           var text = $('#messageInput').val();
-          myDataRef.push({name: name, text: text});
+            var obj = {
+                name: name,
+                text: [text]
+            };
+            myDataRef.push(obj);
+          //myDataRef.push({name: name, text: [text]});
           $('#messageInput').val('');
         }
       });
@@ -22,7 +27,8 @@
         displayChatMessage(message.name, message.text);
       });
       function displayChatMessage(name, text) {
-        $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
+        $('#messagesDiv').text(name + ": " + text).appendTo($('#messagesDiv'));
+        //$('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
         $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
       };
     </script>
