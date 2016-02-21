@@ -5,35 +5,76 @@
   </head>
   <body>
     <div id='messagesDiv'></div>
-    <input type='text' id='nameInput' placeholder='Name'>
-    <input type='text' id='messageInput' placeholder='Message'>
-    <input type='email' id='emailInput' placeholder='email'>
+    <form id="lookup">
+        <input type='text' id='nameInput' placeholder='Name' >
+        <input type='text' id='courseInput' placeholder='course' value='CSCI'>
+        <input type='text' id='emailInput' placeholder='email' value = 'a'>
+            <input type="submit">
+    </form>
     <script>
-      var myDataRef = new Firebase('https://studybuddee.firebaseio.com/');
-      $('#messageInput').keypress(function (e) {
-        if (e.keyCode == 13) {
+      var myDataRef = new Firebase('https://studybudee3.firebaseio.com');
+      $('#lookup').submit(function (e) {
+          e.preventDefault();
+          console.log("SUBMIT");
           var name = $('#nameInput').val();
-          var text = $('#messageInput').val();
+          var course = $('#courseInput').val();
           var email = $('#emailInput').val();
-            var obj = {
-                name: name,
-                text: [text]
-                email: [email]
-            };
-            myDataRef.push(obj);
+          var enrollee = {
+            name: name,
+            email: email
+          };
+          var obj = {};
+          obj[course] = {};
+          var run = false;
+          myDataRef.child(course).on("value", function(snapshot){
+            console.log("before if",run, snapshot.key(), snapshot.val());
+            if(!run){
+              run = true;
+              if (snapshot.val() == null) {
+                //console.log("does not has val", snapshot.val());
+                var objRef = myDataRef.update(obj);
+              }
+              var emails = "";
+              for (var key in snapshot.val())
+              {
+                //debugger
+                emails += snapshot.val()[key].email + ", ";
+              }
+              alert(emails);
+              //alert(findMatches(myDataRef.child(course).enrolees))
+              myDataRef.child(course).push(enrollee);
+            }
+          })
           //myDataRef.push({name: name, text: [text]});
-          $('#messageInput').val('');
-        }
+          $('#nameInput').val('');
+          $('#courseInput').val('');
+          $('#emailInput').val('');
+
+          return false;
       });
-      myDataRef.on('child_added', function(snapshot) {
-        var message = snapshot.val();
-        displayChatMessage(message.name, message.text);
-      });
-      function displayChatMessage(name, text) {
-        $('#messagesDiv').text(name + ": " + text).appendTo($('#messagesDiv'));
-        //$('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
-        $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
-      };
+
+      /*function findMatches(_course)
+      {
+        console.log("In findMatches");
+        userEmails = "";
+        myDataRef.child(_course).on("value", function(snapshot) {
+          console.log("User Emails" + snapshot.val().email);
+          userEmails += snapshot.val().email + ", ";
+      })
+        return userEmails;
+      }*/
+      // function findMatches(_enrolees)
+      // {
+      //   console.log("In findMatches");
+      //   userEmails = "";
+      //   for (var email in _enrolees)
+      //   {
+      //     console.log(email);
+      //     userEmails += email + ", ";
+      //   }
+      //   return userEmails;
+      // }
+
     </script>
   </body>
 </html>
