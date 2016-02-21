@@ -1,13 +1,18 @@
 <!DOCTYPE HTML>
 <html> 
-<body>
+  <body>
 
-<form action="addUser.php" method="post">
-Name: <input type="text" name="name"><br>
-E-mail: <input type="text" name="email"><br>
-Course: <input type="text" name="course"><br>
-<input type="submit">
-</form>
+    <form action="adams_test.php" method="post">
+    FirstName: <input type="text" name="first"><br>
+    LastName: <input type="text" name="last"><br>
+    Email: <input type="email" name="email"><br>
+    <input type="submit">
+    </form>
+    
+    <?php
+      $full_name = $_POST["first"] . " " . $_POST["last"];
+    ?>
+    Welcome <?php echo $full_name  . " and email: " .  $_POST["email"]; ?>
 
-</body>
+  </body>
 </html>
